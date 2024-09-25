@@ -49,7 +49,7 @@ services:
       context: ./BrandquadAPI
       dockerfile: Dockerfile
     entrypoint: []
-    command: celery -A your_project worker -l info
+    command: celery -A BrandquadAPI worker -l info
     volumes:
       - ./BrandquadAPI:/app
     environment:
@@ -75,7 +75,7 @@ services:
       context: ./BrandquadAPI
       dockerfile: Dockerfile
     entrypoint: []
-    command: celery -A your_project beat -l info
+    command: celery -A BrandquadAPI beat -l info
     volumes:
       - ./BrandquadAPI:/app
     environment:
