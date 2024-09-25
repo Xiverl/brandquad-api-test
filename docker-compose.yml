@@ -1,0 +1,97 @@
+version: '3.8'
+
+volumes:
+  postgres_data:
+  static_volume:  # Новый volume для статических файлов
+
+services:
+  db:
+    image: postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  redis:
+    image: redis:6
+
+  backend:
+    build: ./BrandquadAPI
+    entrypoint: []
+    command: gunicorn --bind 0.0.0.0:8000 BrandquadAPI.wsgi
+    volumes:
+      - ./BrandquadAPI:/app
+      - static_volume:/app/staticfiles  # Подключаем volume для статики
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=your_secret_key
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+      - SQL_ENGINE=django.db.backends.postgresql
+      - SQL_DATABASE=postgres
+      - SQL_USER=postgres
+      - SQL_PASSWORD=postgres
+      - SQL_HOST=db
+      - SQL_PORT=5432
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - REDIS_URL=redis://redis:6379/1
+    depends_on:
+      - db
+      - redis
+
+  celery:
+    build:
+      context: ./BrandquadAPI
+      dockerfile: Dockerfile
+    entrypoint: []
+    command: celery -A your_project worker -l info
+    volumes:
+      - ./BrandquadAPI:/app
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=your_secret_key
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+      - SQL_ENGINE=django.db.backends.postgresql
+      - SQL_DATABASE=postgres
+      - SQL_USER=postgres
+      - SQL_PASSWORD=postgres
+      - SQL_HOST=db
+      - SQL_PORT=5432
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - REDIS_URL=redis://redis:6379/1
+    depends_on:
+      - db
+      - redis
+
+  celery-beat:
+    build:
+      context: ./BrandquadAPI
+      dockerfile: Dockerfile
+    entrypoint: []
+    command: celery -A your_project beat -l info
+    volumes:
+      - ./BrandquadAPI:/app
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=your_secret_key
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+      - SQL_ENGINE=django.db.backends.postgresql
+      - SQL_DATABASE=postgres
+      - SQL_USER=postgres
+      - SQL_PASSWORD=postgres
+      - SQL_HOST=db
+      - SQL_PORT=5432
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - REDIS_URL=redis://redis:6379/1
+    depends_on:
+      - db
+      - redis
