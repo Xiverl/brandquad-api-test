@@ -15,7 +15,8 @@ docker compose up --build
 ```bash
 docker-compose exec -it backend bash
 ```
-Откроется терминал контейнера bakcend. Здесь мы уже выполоняем команду
+
+- Откроется терминал контейнера bakcend. Здесь мы уже выполоняем команду
 ```bash
 python manage.py migrate
 ```
