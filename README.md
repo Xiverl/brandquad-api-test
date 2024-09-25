@@ -1,9 +1,12 @@
 ## Тестовое задние для Brandquad
 
-# Инстрцкуия запуска
+# Инструкция запуска
 
 
-- Клонировать репозиторий с помощью ```git clone ```
+- Клонировать репозиторий с помощью 
+```bash
+git clone git@github.com:Xiverl/brandquad-api-test.git
+```
 
 - Запустить docker-compose с помощью команды 
 ```bash
