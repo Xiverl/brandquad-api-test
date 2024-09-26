@@ -28,3 +28,18 @@ python manage.py migrate
 ```bash
 python manage.py createsuperuser
 ```
+
+
+
+## Как запустить парсинг ссылки через Management Comand
+
+
+- Откройте второй терминал по расположению docker-compose.yml и выполните команду
+```bash
+docker-compose exec -it backend bash
+```
+
+- Откроется терминал контейнера backend. В нем необходимо выпонить команду
+```bash
+python manage.py parse_log_file <ссылка_на_файл>
+```
